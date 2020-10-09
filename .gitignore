@@ -94,6 +94,7 @@ lint/tmp/
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -105,4 +106,5 @@ lint/tmp/
 hs_err_pid*
 
 # Cusom
-src/test
+app/src/test
+local.properties
