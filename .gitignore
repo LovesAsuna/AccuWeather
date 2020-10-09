@@ -107,4 +107,5 @@ hs_err_pid*
 
 # Cusom
 app/src/test
+app/src/androidTest
 local.properties
