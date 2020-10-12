@@ -1,10 +1,10 @@
 package me.lovesasuna.accuweather
 
 import android.Manifest
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.BindView
@@ -18,11 +18,10 @@ import me.lovesasuna.accuweather.util.ToastUtil.showShortToast
 import okhttp3.*
 import okio.IOException
 
-
 class MainActivity : AppCompatActivity() {
 
     @BindView(R.id.tv_address_detail)
-    var tvAddressDetail: TextView? = null
+    lateinit var tvAddressDetail: TextView
 
     // 权限请求框架
     private lateinit var rxPermissions: RxPermissions
@@ -34,9 +33,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        ButterKnife.setDebug(true)
         ButterKnife.bind(this)
-
         rxPermissions = RxPermissions(this)
+        tvAddressDetail = window.findViewById(R.id.tv_address_detail)
         permissionVersion()
     }
 
@@ -102,34 +102,9 @@ class MainActivity : AppCompatActivity() {
             // 获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
             val coorType: String = location.coorType
 
-            // 获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
-            // 161  表示网络定位结果
-            val errorCode: Int = location.locType
-            println("返回码： $errorCode")
-
-            // 获取详细地址信息
-            val addr: String = location.addrStr
-
-            // 获取国家
-            val country: String = location.country
-
-            // 获取省份
-            val province: String = location.province
-
-            // 获取城市
-            val city: String = location.city
-
-            // 获取区县
-            val district: String = location.district
-
-            // 获取街道信息
-            val street: String = location.street
-
-            // 获取位置描述信息
-            val locationDescribe: String = location.locationDescribe
-
-            // 设置文本显示
+            println(tvAddressDetail)
             tvAddressDetail!!.text = "测试"
+            getTodayWeather(longitude, latitude)
         }
     }
 
@@ -141,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         val request: Request = Request.Builder()
             .url("https://devapi.heweather.net/v7/weather/now?key=96d36fa1d4d548278bafb3002c8f7326&location=$longitude,$latitude")
             .build()
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
