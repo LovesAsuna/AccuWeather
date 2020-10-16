@@ -6,7 +6,7 @@ import java.lang.ref.WeakReference
  * @author LovesAsuna
  * @date 2020/10/10 21:11
  **/
-class BasePresenter<V : BaseView> {
+open class BasePresenter<V : BaseView> {
     private var mWeakReference: WeakReference<V>? = null
 
     /**

@@ -9,7 +9,7 @@ import me.lovesasuna.mvplibrary.util.ActivityManager
  * @author LovesAsuna
  * @date 2020/10/10 23:47
  **/
-class BaseApplication : Application() {
+open class BaseApplication : Application() {
     companion object {
         lateinit var activityManager: ActivityManager
         lateinit var application: BaseApplication
