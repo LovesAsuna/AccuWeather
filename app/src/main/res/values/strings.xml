@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">AccuWeather</string>
+    <string name="city_weather">城市天气</string>
+    <string name="temperature">0</string>
+    <string name="last_update_time">上次更新时间: </string>
+    <string name="life_advice">生活建议</string>
+    <string name="city">城市</string>
+    <string name="sign">℃</string>
+    <string name="comfort">舒适度：</string>
+    <string name="tourism_index">旅游指数：</string>
+    <string name="sport_index">"运动指数: "</string>
+    <string name="car_wash_index">"洗车指数: "</string>
+    <string name="air_index">"空气指数: "</string>
+    <string name="dressing_index">穿衣指数：</string>
+    <string name="cold_index">感冒指数：</string>
 </resources>
