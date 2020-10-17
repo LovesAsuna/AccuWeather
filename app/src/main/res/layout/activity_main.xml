@@ -12,8 +12,7 @@
     <!--相对布局-->
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="UselessParent">
+            android:layout_height="match_parent">
         <!--透明度为0.3的黑色背景-->
         <LinearLayout
                 android:background="#000"
@@ -119,6 +118,56 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
+                    <!--风力展示-->
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:padding="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <RelativeLayout
+                                android:id="@+id/rl_wind"
+                                android:layout_width="130dp"
+                                android:layout_height="120dp">
+                            <!--大风车-->
+                            <me.lovesasuna.mvplibrary.view.WhiteWindmills
+                                    android:id="@+id/ww_big"
+                                    android:layout_width="100dp"
+                                    android:layout_height="120dp" />
+                            <!--小风车-->
+                            <me.lovesasuna.mvplibrary.view.WhiteWindmills
+                                    android:id="@+id/ww_small"
+                                    android:layout_width="50dp"
+                                    android:layout_height="60dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentRight="true"
+                                    />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent">
+                            <!--风向-->
+                            <TextView
+                                    android:id="@+id/tv_wind_direction"
+                                    android:textColor="#FFF"
+                                    android:textSize="@dimen/sp_14"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                            <!--风力-->
+                            <TextView
+                                    android:layout_marginTop="20dp"
+                                    android:id="@+id/tv_wind_power"
+                                    android:textColor="#FFF"
+                                    android:textSize="@dimen/sp_14"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
                     <!--用于展示生活指数的布局-->
                     <LinearLayout
                             android:orientation="vertical"
@@ -162,8 +211,8 @@
                         <!--洗车指数-->
                         <TextView
                                 android:layout_marginTop="16dp"
-                                android:id="@+id/tv_cw"
-                                android:text="@string/car_wash_index"
+                                android:id="@+id/tv_Driving"
+                                android:text="@string/driving_index"
                                 android:textSize="@dimen/sp_14"
                                 android:textColor="#FFF"
                                 android:layout_width="wrap_content"
@@ -178,14 +227,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                         <!--穿衣指数-->
-                        <TextView
-                                android:layout_marginTop="16dp"
-                                android:id="@+id/tv_drsg"
-                                android:text="@string/dressing_index"
-                                android:textSize="@dimen/sp_14"
-                                android:textColor="#FFF"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
                         <!--感冒指数-->
                         <TextView
                                 android:layout_marginTop="16dp"
