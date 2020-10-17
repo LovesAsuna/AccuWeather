@@ -1,6 +1,7 @@
 package me.lovesasuna.accuweather.api
 
 import me.lovesasuna.accuweather.bean.ForecastResponse
+import me.lovesasuna.accuweather.bean.LifeStyleResponse
 import me.lovesasuna.accuweather.bean.LocationResponse
 import me.lovesasuna.accuweather.bean.WeatherResponse
 import retrofit2.Call
@@ -16,13 +17,15 @@ import retrofit2.http.Query
  */
 interface APIService {
 
-    @GET("currentconditions/v1/{locationkey}?apikey=zv7XGQbr8wegduK3zh12G0mz3y540k9z&language=zh-CN&details=true")
+    @GET("currentconditions/v1/{locationkey}?apikey=NqJF7mR1xOeHNtNuMjA0Y0cevjVeL95M&language=zh-CN&details=true")
     fun getTodayWeather(@Path("locationkey") key: String): Call<WeatherResponse>
 
-    @GET("forecasts/v1/daily/5day/{locationkey}?apikey=zv7XGQbr8wegduK3zh12G0mz3y540k9z&language=zh-CN")
+    @GET("forecasts/v1/daily/5day/{locationkey}?apikey=NqJF7mR1xOeHNtNuMjA0Y0cevjVeL95M&language=zh-CN&metric=true")
     fun getWeatherForecast(@Path("locationkey") key: String): Call<ForecastResponse>
 
-    @GET("locations/v1/cities/geoposition/search?apikey=zv7XGQbr8wegduK3zh12G0mz3y540k9z&language=zh-CN&details=false&toplevel=false")
+    @GET("locations/v1/cities/geoposition/search?apikey=NqJF7mR1xOeHNtNuMjA0Y0cevjVeL95M&language=zh-CN&details=false&toplevel=false")
     fun getLocation(@Query("q") location: String): Call<LocationResponse>
 
+    @GET("indices/v1/daily/1day/{locationkey}?apikey=NqJF7mR1xOeHNtNuMjA0Y0cevjVeL95M&language=zh-CN&details=true")
+    fun getDailyIndex(@Path("locationkey") key: String): Call<LifeStyleResponse>
 }
