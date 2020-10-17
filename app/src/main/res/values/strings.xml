@@ -7,10 +7,10 @@
     <string name="city">城市</string>
     <string name="sign">℃</string>
     <string name="comfort">舒适度：</string>
-    <string name="tourism_index">旅游指数：</string>
-    <string name="sport_index">"运动指数: "</string>
-    <string name="car_wash_index">"洗车指数: "</string>
-    <string name="air_index">"空气指数: "</string>
-    <string name="dressing_index">穿衣指数：</string>
-    <string name="cold_index">感冒指数：</string>
+    <string name="tourism_index">旅游：</string>
+    <string name="sport_index">"户外运动: "</string>
+    <string name="driving_index">"驾车: "</string>
+    <string name="air_index">"空气质量: "</string>
+    <string name="cold_index">流感：</string>
+    <string name="apikey">2TuSSD35LmnMEKSiuBI99gApNKDcamXU</string>
 </resources>
