@@ -20,7 +20,7 @@ class WeatherForecastAdapter(
     override fun convert(helper: BaseViewHolder, item: DailyForecastsItem) {
         helper.setText(R.id.tv_date, item.date) //日期
             .setText(R.id.tv_info, item.day?.iconPhrase) //天气
-            .setText(R.id.tv_low_and_height, "${item.temperature?.minimum}/${item.temperature?.maximum}℃") //最低温和最高温
+            .setText(R.id.tv_low_and_height, "${item.temperature?.minimum?.value}/${item.temperature?.maximum?.value}℃") //最低温和最高温
     }
 
 }
