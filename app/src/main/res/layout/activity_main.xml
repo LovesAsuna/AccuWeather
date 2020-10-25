@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/bg"
               android:gravity="center"
               android:fitsSystemWindows="true"
               android:background="@drawable/pic_bg"
@@ -38,15 +39,36 @@
                         android:textSize="16sp"
                         android:textColor="#FFF"
                         android:text="@string/city_weather" />
+                <!--城市图标-->
+                <ImageView android:id="@+id/iv_city_select"
+                           android:layout_gravity="right"
+                           android:paddingRight="16dp"
+                           android:paddingLeft="16dp"
+                           android:src="@mipmap/icon_city"
+                           android:layout_width="wrap_content"
+                           android:layout_height="match_parent"
+                />
             </androidx.appcompat.widget.Toolbar>
 
+            <!--下拉刷新布局-->
+            <com.scwang.smart.refresh.layout.SmartRefreshLayout
+                    android:id="@+id/refresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srlAccentColor="#FFF"
+                    app:srlPrimaryColor="#00000000">
+            <!--刷新头部样式-->
+            <com.scwang.smart.refresh.header.MaterialHeader
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
             <!--NestedScrollView 里面只能包裹一个大的布局，
             当这个布局长度超出手机展示的部分就可以滚动，其中overScrollMode="never"
             的意思是隐藏掉滚动条到顶部和底部时的水波纹-->
             <androidx.core.widget.NestedScrollView
-                    android:overScrollMode="never"
+                    android:id="@+id/scroll_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never">
                 <!--天气和所在城市 -->
                 <LinearLayout
                         android:gravity="center_horizontal"
@@ -94,14 +116,20 @@
                             android:layout_height="wrap_content"/>
                     <!--城市-->
                     <TextView
-                            android:layout_marginTop="20dp"
                             android:id="@+id/tv_city"
-                            android:textColor="#FFF"
-                            android:text="@string/city"
-                            android:textSize="20sp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:text="@string/city"
+                            android:textColor="#FFF"
+                            android:textSize="18sp"/>
+
                     <!--上一次更新时间-->
+                    <ImageView
+                            android:id="@+id/iv_location"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@mipmap/icon_location"
+                            android:visibility="gone" android:contentDescription="定位图标"/>
                     <TextView
                             android:layout_marginTop="8dp"
                             android:id="@+id/tv_old_time"
@@ -239,6 +267,7 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
+            </com.scwang.smart.refresh.layout.SmartRefreshLayout>
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

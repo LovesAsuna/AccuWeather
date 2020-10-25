@@ -17,10 +17,18 @@ import java.util.concurrent.TimeUnit
 object ServiceGenerator {
     // https://free-api.heweather.net/s6/weather/now?key=3086e91d66c04ce588a7f538f917c7f4&location=深圳
     // 将上方的API接口地址进行拆分得到不变的一部分,实际开发中可以将这一部分作为服务器的ip访问地址
-    private const val BASE_URL = "http://dataservice.accuweather.com"
+    private var BASE_URL: String? = null
+
+    private fun urlType(type: Int): String? {
+        when (type) {
+            0 -> BASE_URL = "http://dataservice.accuweather.com/"
+            1 -> BASE_URL = "https://cn.bing.com/"
+        }
+        return BASE_URL
+    }
 
     // 创建服务  参数就是API服务
-    fun <T> createService(serviceClass: Class<T>): T {
+    fun <T> createService(serviceClass: Class<T>, type: Int): T {
 
         // 创建OkHttpClient构建器对象
         val okHttpClientBuilder = OkHttpClient.Builder()
@@ -40,7 +48,7 @@ object ServiceGenerator {
         okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
 
         // 在Retrofit中设置httpclient
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL) // 设置地址  就是上面的固定地址,如果你是本地访问的话，可以拼接上端口号  例如 +":8080"
+        val retrofit = Retrofit.Builder().baseUrl(urlType(type)!!) // 设置地址  就是上面的固定地址,如果你是本地访问的话，可以拼接上端口号  例如 +":8080"
             .addConverterFactory(JacksonConverterFactory.create()) // 用Gson把服务端返回的json数据解析成实体
             .client(okHttpClientBuilder.build()) // 放入OKHttp，之前说过retrofit是对OkHttp的进一步封装
             .build()

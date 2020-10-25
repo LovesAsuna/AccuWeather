@@ -38,6 +38,10 @@ dependencies {
     // RecyclerView最好的适配器，让你的适配器一目了然，告别代码冗余
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
 
+    // 图片加载框架
+    api 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     // 权限请求框架
     api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5'
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'

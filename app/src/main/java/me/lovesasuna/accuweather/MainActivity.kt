@@ -3,8 +3,16 @@ package me.lovesasuna.accuweather
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +20,31 @@ import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.tbruyelle.rxpermissions2.RxPermissions
+import me.lovesasuna.accuweather.adapter.AreaAdapter
+import me.lovesasuna.accuweather.adapter.CityAdapter
+import me.lovesasuna.accuweather.adapter.ProvinceAdapter
 import me.lovesasuna.accuweather.adapter.WeatherForecastAdapter
 import me.lovesasuna.accuweather.bean.*
+import me.lovesasuna.accuweather.bean.CityResponse.CityBean
+import me.lovesasuna.accuweather.bean.CityResponse.CityBean.AreaBean
 import me.lovesasuna.accuweather.contract.WeatherContract
 import me.lovesasuna.accuweather.databinding.ActivityMainBinding
 import me.lovesasuna.accuweather.mvp.MvpActivity
 import me.lovesasuna.accuweather.util.ToastUtil.showShortToast
+import me.lovesasuna.mvplibrary.util.LiWindow
+import me.lovesasuna.mvplibrary.util.RecyclerViewAnimation.runLayoutAnimationRight
 import me.lovesasuna.mvplibrary.view.WhiteWindmills
+import org.json.JSONArray
+import org.json.JSONException
 import retrofit2.Response
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
 
 
 class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherContract.IWeatherView {
@@ -39,6 +63,18 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
     lateinit var rv: RecyclerView
     lateinit var mList: MutableList<DailyForecastsItem>
     lateinit var mAdapter: WeatherForecastAdapter
+    lateinit var list: MutableList<String>
+    lateinit var provinceList: MutableList<CityResponse>
+    lateinit var cityList: MutableList<CityBean>
+    lateinit var areaList: MutableList<AreaBean>
+    lateinit var provinceAdapter: ProvinceAdapter
+    lateinit var cityAdapter: CityAdapter
+    lateinit var areaAdapter: AreaAdapter
+    var provinceTitle: String = ""
+    lateinit var liWindow: LiWindow
+    lateinit var citySelect: ImageView
+    lateinit var bg: LinearLayout
+
     lateinit var tvComf: TextView
     lateinit var tvDriving: TextView
     lateinit var tvFlu: TextView
@@ -47,11 +83,18 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
     lateinit var tvAir: TextView
     lateinit var tvWindDirection: TextView
     lateinit var tvWindPower: TextView
+    lateinit var ivLocation: ImageView
+    // 图标显示标识,true显示，false不显示,只有定位的时候才为true,切换城市和常用城市都为false
+    private var flag = true
     lateinit var wwBig: WhiteWindmills
     lateinit var wwSmall: WhiteWindmills
+    lateinit var refresh: SmartRefreshLayout
 
     // 权限请求框架
     private lateinit var rxPermissions: RxPermissions
+
+    // 区/县  改为全局的静态变量,方便更换城市之后也能进行下拉刷新
+    private var district: String? = null
 
     //定位器
     lateinit var mLocationClient: LocationClient
@@ -78,6 +121,15 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
         tvWindPower = binding.tvWindPower
         wwBig = binding.wwBig
         wwSmall = binding.wwSmall
+        bg = binding.bg
+        refresh = binding.refresh
+        ivLocation = binding.ivLocation
+
+        citySelect = binding.ivCitySelect.also {
+            it.setOnClickListener {
+                showCityWindow()
+            }
+        }
         initList()
         setContentView(binding.root)
         permissionVersion()
@@ -97,6 +149,158 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
             //发现只要权限在AndroidManifest.xml中注册过，均会认为该权限granted  提示一下即可
             showShortToast(this, "你的版本在Android6.0以下，不需要动态申请权限。")
         }
+    }
+
+    /**
+     * 省市县数据渲染
+     * @param recyclerView  列表
+     * @param areaBack 区县返回
+     * @param cityBack 市返回
+     * @param windowTitle  窗口标题
+     */
+    private fun initCityData(
+        recyclerView: RecyclerView,
+        areaBack: ImageView,
+        cityBack: ImageView,
+        windowTitle: TextView
+    ) {
+        //初始化省数据 读取省数据并显示到列表中
+        try {
+            val inputStream: InputStream = resources.assets.open("City.txt") //读取数据
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+            val stringBuffer = StringBuffer()
+            var lines: String? = bufferedReader.readLine()
+            while (lines != null) {
+                stringBuffer.append(lines)
+                lines = bufferedReader.readLine()
+            }
+            val Data = JSONArray(stringBuffer.toString())
+            //循环这个文件数组、获取数组中每个省对象的名字
+            for (i in 0 until Data.length()) {
+                val provinceJsonObject = Data.getJSONObject(i)
+                val provinceName = provinceJsonObject.getString("name")
+                val response = CityResponse()
+                response.setName(provinceName)
+                provinceList.add(response)
+            }
+
+            //定义省份显示适配器
+            provinceAdapter = ProvinceAdapter(R.layout.item_city_list, provinceList)
+            val manager = LinearLayoutManager(context)
+            recyclerView.layoutManager = manager
+            recyclerView.adapter = provinceAdapter
+            provinceAdapter.notifyDataSetChanged()
+            runLayoutAnimationRight(recyclerView) //动画展示
+            provinceAdapter.setOnItemChildClickListener { adapter, view, position ->
+                try {
+                    //返回上一级数据
+                    cityBack.visibility = View.VISIBLE
+                    cityBack.setOnClickListener {
+                        recyclerView.adapter = provinceAdapter
+                        provinceAdapter.notifyDataSetChanged()
+                        cityBack.visibility = View.GONE
+                        windowTitle.text = "中国"
+                    }
+
+                    //根据当前位置的省份所在的数组位置、获取城市的数组
+                    val provinceObject = Data.getJSONObject(position)
+                    windowTitle.text = provinceList[position].getName()
+                    provinceTitle = provinceList[position].getName()!!
+                    val cityArray = provinceObject.getJSONArray("city")
+
+                    //更新列表数据
+                    cityList.clear()
+
+                    for (i in 0 until cityArray.length()) {
+                        val cityObj = cityArray.getJSONObject(i)
+                        val cityName = cityObj.getString("name")
+                        val response = CityBean()
+                        response.name = cityName
+                        cityList.add(response)
+                    }
+                    cityAdapter = CityAdapter(R.layout.item_city_list, cityList)
+                    val manager1 = LinearLayoutManager(context)
+                    recyclerView.layoutManager = manager1
+                    recyclerView.adapter = cityAdapter
+                    cityAdapter.notifyDataSetChanged()
+                    runLayoutAnimationRight(recyclerView)
+                    cityAdapter.setOnItemChildClickListener { adapter, view, position ->
+                        try {
+                            //返回上一级数据
+                            areaBack.visibility = View.VISIBLE
+                            areaBack.setOnClickListener {
+                                recyclerView.adapter = cityAdapter
+                                cityAdapter.notifyDataSetChanged()
+                                areaBack.visibility = View.GONE
+                                windowTitle.text = provinceTitle
+                                areaList.clear()
+                            }
+                            //根据当前城市数组位置 获取地区数据
+                            windowTitle.text = cityList[position].name
+                            val cityJsonObj = cityArray.getJSONObject(position)
+                            val areaJsonArray = cityJsonObj.getJSONArray("area")
+                            areaList.clear()
+                            list.clear()
+                            for (i in 0 until areaJsonArray.length()) {
+                                list.add(areaJsonArray.getString(i))
+                            }
+                            Log.i("list", list.toString())
+                            for (j in list.indices) {
+                                val response = AreaBean()
+                                response.name = list[j]
+                                areaList.add(response)
+                            }
+                            areaAdapter = AreaAdapter(R.layout.item_city_list, areaList)
+                            val manager2 = LinearLayoutManager(context)
+                            recyclerView.layoutManager = manager2
+                            recyclerView.adapter = areaAdapter
+                            areaAdapter.notifyDataSetChanged()
+                            runLayoutAnimationRight(recyclerView)
+                            areaAdapter.setOnItemChildClickListener { adapter, view, position ->
+                                mPresent!!.citySearch(areaList[position].name!!) {
+                                    district = "${it.body()?.get(0)?.geoPosition?.latitude},${
+                                        it.body()?.get(0)?.geoPosition?.longitude
+                                    }"
+                                    mPresent!!.todayWeather(context, district!!) //今日天气
+                                    mPresent!!.weatherForecast(context, district!!) //天气预报
+                                    mPresent!!.lifeStyle(context, district!!) //生活指数
+                                    // 切换城市得到的城市不属于定位，因此这里隐藏定位图标
+                                    flag = false
+                                    liWindow.closePopupWindow()
+                                }
+
+                            }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * 城市弹窗
+     */
+    private fun showCityWindow() {
+        provinceList = ArrayList()
+        cityList = ArrayList()
+        areaList = ArrayList()
+        list = ArrayList()
+        liWindow = LiWindow(context)
+        val view: View = LayoutInflater.from(context).inflate(R.layout.window_city_list, null)
+        val areaBack: ImageView = view.findViewById(R.id.iv_back_area) as ImageView
+        val cityBack: ImageView = view.findViewById(R.id.iv_back_city) as ImageView
+        val windowTitle = view.findViewById(R.id.tv_title) as TextView
+        val recyclerView = view.findViewById(R.id.rv) as RecyclerView
+        liWindow.showRightPopupWindow(view)
+        initCityData(recyclerView, areaBack, cityBack, windowTitle)//加载城市列表数据
     }
 
     //动态权限申请
@@ -160,10 +364,20 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
             // 获取经纬度坐标类型，以LocationClientOption中设置过的坐标类型为准
             val coorType: String = location.coorType
 
-            val location = "$latitude,$longitude"
-            mPresent!!.todayWeather(this, location)
-            mPresent!!.weatherForecast(this, location)
-            mPresent!!.lifeStyle(this, location)
+            // 在数据请求前加载等待弹窗，返回结果后关闭弹窗
+            showLoadingDialog()
+
+            district = "$latitude,$longitude"
+            mPresent!!.todayWeather(context, district!!)
+            mPresent!!.weatherForecast(context, district!!)
+            mPresent!!.lifeStyle(context, district!!)
+            mPresent!!.biying(context)
+
+            refresh.setOnRefreshListener {
+                mPresent!!.todayWeather(context, district!!) //今日天气
+                mPresent!!.weatherForecast(context, district!!) //天气预报
+                mPresent!!.lifeStyle(context, district!!) //生活指数
+            }
         }
     }
 
@@ -188,8 +402,16 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
     // 查询当天天气，请求成功后的数据返回
     @SuppressLint("SetTextI18n")
     override fun getTodayWeatherResult(response: Response<WeatherResponse>) {
+        // 关闭弹窗
+        dismissLoadingDialog()
         //数据渲染显示出来
         tvTemperature.text = response.body()?.get(0)?.realFeelTemperature?.metric?.value.toString()//温度
+        if (flag) {
+            ivLocation.visibility = View.VISIBLE
+        } else {
+            ivLocation.visibility = View.GONE
+        }
+
         tvInfo.text = response.body()?.get(0)?.weatherText//天气状况
         tvWindDirection.text = "风向     " + response.body()?.get(0)?.wind?.direction?.localized//风向
         tvWindPower.text = "风力     " + response.body()?.get(0)?.wind?.speed?.metric?.value + "级"//风力
@@ -228,7 +450,33 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
 
     //数据请求失败返回
     override fun dataFailed() {
+        // 关闭刷新
+        refresh.finishRefresh()
+        // 关闭弹窗
+        dismissLoadingDialog()
         showShortToast(this, "网络异常") //这里的context是框架中封装好的，等同于this
+    }
+
+    override fun getBiYingResult(response: Response<BiYingImgResponse>) {
+        dismissLoadingDialog()
+        if (response.body()?.images != null) {
+            //得到的图片地址是没有前缀的，所以加上前缀否则显示不出来
+            val imgUrl = "http://cn.bing.com" + response.body()?.images?.get(0)?.url
+            Glide.with(context)
+                .asBitmap()
+                .load(imgUrl)
+                .into(object : SimpleTarget<Bitmap?>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: com.bumptech.glide.request.transition.Transition<in Bitmap?>?
+                    ) {
+                        val drawable: Drawable = BitmapDrawable(context.resources, resource)
+                        bg.background = drawable
+                    }
+                })
+        } else {
+            showShortToast(context, "数据为空")
+        }
     }
 
 }

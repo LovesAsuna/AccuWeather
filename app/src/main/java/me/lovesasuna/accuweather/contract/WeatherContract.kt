@@ -1,11 +1,11 @@
 package me.lovesasuna.accuweather.contract
 
+import android.app.Activity
+import android.content.Context
+import android.util.Log
 import me.lovesasuna.accuweather.MainActivity
 import me.lovesasuna.accuweather.api.APIService
-import me.lovesasuna.accuweather.bean.ForecastResponse
-import me.lovesasuna.accuweather.bean.LifeStyleResponse
-import me.lovesasuna.accuweather.bean.LocationResponse
-import me.lovesasuna.accuweather.bean.WeatherResponse
+import me.lovesasuna.accuweather.bean.*
 import me.lovesasuna.mvplibrary.base.BasePresenter
 import me.lovesasuna.mvplibrary.base.BaseView
 import me.lovesasuna.mvplibrary.net.NetCallBack
@@ -24,15 +24,14 @@ import retrofit2.Response
 class WeatherContract {
     class WeatherPresenter : BasePresenter<IWeatherView>() {
 
-        val service = createService(APIService::class.java)
 
         /**
          * 当日天气
          * @param context
          * @param location  区/县
          */
-        fun todayWeather(context: MainActivity.MyLocationListener, location: String) {
-
+        fun todayWeather(context: Activity, location: String) {
+            val service = createService(APIService::class.java, 0)
             actionByLocation(service, location) {
                 //设置请求回调  NetCallBack是重写请求回调
                 service.getTodayWeather(getView()?.getCurrentLocationResult(it)!!).enqueue(object :
@@ -62,8 +61,8 @@ class WeatherContract {
          * @param context
          * @param location
          */
-        fun weatherForecast(context: MainActivity.MyLocationListener, location: String) {
-
+        fun weatherForecast(context: Activity, location: String) {
+            val service = createService(APIService::class.java, 0)
             actionByLocation(service, location) {
                 //设置请求回调  NetCallBack是重写请求回调
                 service.getWeatherForecast(getView()?.getCurrentLocationResult(it)!!).enqueue(object :
@@ -91,8 +90,8 @@ class WeatherContract {
          * @param context
          * @param location
          */
-        fun lifeStyle(context: MainActivity.MyLocationListener, location: String) {
-
+        fun lifeStyle(context: Activity, location: String) {
+            val service = createService(APIService::class.java, 0)
             actionByLocation(service, location) {
                 service.getDailyIndex(getView()?.getCurrentLocationResult(it)!!)
                     .enqueue(object : NetCallBack<LifeStyleResponse>() {
@@ -109,6 +108,37 @@ class WeatherContract {
                         }
                     })
             }
+        }
+
+        fun citySearch(q: String, callBack: (response: Response<CitySearchResponse>) -> Unit) {
+            val service = createService(APIService::class.java, 0)
+            service.getCityResearch(q).enqueue(object : NetCallBack<CitySearchResponse>() {
+                override fun onSuccess(call: Call<CitySearchResponse>, response: Response<CitySearchResponse>) {
+                    callBack.invoke(response)
+                }
+
+                override fun onFailed() {
+                    if (getView() != null) {
+                        getView()?.dataFailed()
+                    }
+                }
+            })
+        }
+
+        fun biying(context: Context) {
+            val service = createService(APIService::class.java, 1)
+            service.biying().enqueue(object : NetCallBack<BiYingImgResponse>() {
+                override fun onSuccess(call: Call<BiYingImgResponse>, response: Response<BiYingImgResponse>) {
+                    if (getView() != null) {
+                        getView()!!.getBiYingResult(response)
+                    }
+                }
+
+                override fun onFailed() {
+
+                }
+
+            })
         }
 
         private fun actionByLocation(
@@ -136,16 +166,19 @@ class WeatherContract {
         // 将数据放入实体
         fun getCurrentLocationResult(response: Response<LocationResponse>): String?
 
-        //将数据放入实体
+        // 将数据放入实体
         fun getTodayWeatherResult(response: Response<WeatherResponse>)
 
-        //查询天气预报的数据返回
+        // 查询天气预报的数据返回
         fun getWeatherForecastResult(response: Response<ForecastResponse>)
 
-        //查询生活指数的数据返回
+        // 查询生活指数的数据返回
         fun getLifeStyleResult(response: Response<LifeStyleResponse>)
 
-        //错误返回
+        // 错误返回
         fun dataFailed()
+
+        // 获取必应每日一图返回
+        fun getBiYingResult(response: Response<BiYingImgResponse>)
     }
 }
