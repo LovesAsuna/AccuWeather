@@ -37,6 +37,7 @@ import me.lovesasuna.accuweather.mvp.MvpActivity
 import me.lovesasuna.accuweather.util.ToastUtil.showShortToast
 import me.lovesasuna.mvplibrary.util.LiWindow
 import me.lovesasuna.mvplibrary.util.RecyclerViewAnimation.runLayoutAnimationRight
+import me.lovesasuna.mvplibrary.view.CircleView
 import me.lovesasuna.mvplibrary.view.WhiteWindmills
 import org.json.JSONArray
 import org.json.JSONException
@@ -84,8 +85,14 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
     lateinit var tvWindDirection: TextView
     lateinit var tvWindPower: TextView
     lateinit var ivLocation: ImageView
+
     // 图标显示标识,true显示，false不显示,只有定位的时候才为true,切换城市和常用城市都为false
     private var flag = true
+
+    lateinit var waveView : CircleView
+    lateinit var tvPm25: TextView
+    lateinit var tvO3: TextView
+    lateinit var tvCo: TextView
     lateinit var wwBig: WhiteWindmills
     lateinit var wwSmall: WhiteWindmills
     lateinit var refresh: SmartRefreshLayout
@@ -119,6 +126,13 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
         tvAir = binding.tvAir
         tvWindDirection = binding.tvWindDirection
         tvWindPower = binding.tvWindPower
+        waveView = binding.waveView
+        waveView.setmWaterLevel(0.7F)
+        // 开始执行
+        waveView.startWave()
+        tvPm25 = binding.tvPm25
+        tvO3 = binding.tvO3
+        tvCo = binding.tvCo
         wwBig = binding.wwBig
         wwSmall = binding.wwSmall
         bg = binding.bg
@@ -416,6 +430,10 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
         tvWindDirection.text = "风向     " + response.body()?.get(0)?.wind?.direction?.localized//风向
         tvWindPower.text = "风力     " + response.body()?.get(0)?.wind?.speed?.metric?.value + "级"//风力
         tvOldTime.text = "上次更新时间：" + response.body()?.get(0)?.localObservationDateTime
+
+        tvPm25.text = "20"//PM2.5
+        tvO3.text = "25"//臭氧
+        tvCo.text = "0.5"//一氧化碳
     }
 
     override fun getWeatherForecastResult(response: Response<ForecastResponse>) {
