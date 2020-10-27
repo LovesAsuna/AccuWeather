@@ -146,6 +146,144 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
+                    <!--空气质量-->
+                    <LinearLayout
+                            android:padding="20dp"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <!--标题-->
+                        <TextView
+                                android:textSize="18sp"
+                                android:textColor="#FFF"
+                                android:text="空气质量"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:layout_marginLeft="15dp"/>
+
+                        <LinearLayout
+                                android:padding="8dp"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                            <!--污染指数 动画展示-->
+                            <LinearLayout
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+                                <TextView
+                                        android:layout_marginBottom="8dp"
+                                        android:textSize="14sp"
+                                        android:textColor="#DAEBEE"
+                                        android:text="污染指数"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"/>
+                                <me.lovesasuna.mvplibrary.view.CircleView
+                                        android:id="@+id/wave_view"
+                                        android:layout_width="150dp"
+                                        android:layout_height="150dp"
+                                        android:layout_centerInParent="true" android:layout_marginBottom="22.5dp"
+                                        android:layout_marginRight="45dp"/>
+                                <!--                                &lt;!&ndash;显示污染指数进度值&ndash;&gt;-->
+<!--                                <me.lovesasuna.mvplibrary.view.RoundProgressBar-->
+<!--                                        android:id="@+id/rpb_aqi"-->
+<!--                                        app:round_bg_color="#C6D7F4"-->
+<!--                                        app:round_progress_color="#FBFEF7"-->
+<!--                                        android:layout_gravity="center"-->
+<!--                                        android:layout_width="120dp"-->
+<!--                                        android:layout_height="120dp"/>-->
+                            </LinearLayout>
+                            <!--其他指数-->
+                            <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <!--PM2.5-->
+                                <LinearLayout
+                                        android:layout_marginTop="12dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+                                    <TextView
+                                            android:gravity="center"
+                                            android:textColor="#FFF"
+                                            android:text="PM2.5"
+                                            android:textSize="12sp"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"/>
+                                    <TextView
+                                            android:gravity="center"
+                                            android:id="@+id/tv_pm25"
+                                            android:textColor="#FFF"
+                                            android:textSize="12sp"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"/>
+                                </LinearLayout>
+
+
+                                <!--O3 臭氧-->
+                                <LinearLayout
+                                        android:layout_marginTop="12dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+                                    <LinearLayout
+                                            android:gravity="center"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1">
+                                        <TextView
+                                                android:textColor="#FFF"
+                                                android:text="O"
+                                                android:textSize="12sp"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"/>
+                                        <TextView
+                                                android:textColor="#FFF"
+                                                android:text="3"
+                                                android:textSize="8sp"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"/>
+                                    </LinearLayout>
+                                    <TextView
+                                            android:gravity="center"
+                                            android:id="@+id/tv_o3"
+                                            android:textColor="#FFF"
+                                            android:textSize="12sp"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"/>
+                                </LinearLayout>
+
+                                <!--CO 一氧化碳-->
+                                <LinearLayout
+                                        android:layout_marginTop="12dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+                                    <TextView
+                                            android:gravity="center"
+                                            android:textColor="#FFF"
+                                            android:text="CO"
+                                            android:textSize="12sp"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"/>
+                                    <TextView
+                                            android:gravity="center"
+                                            android:id="@+id/tv_co"
+                                            android:textColor="#FFF"
+                                            android:textSize="12sp"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
                     <!--风力展示-->
                     <LinearLayout
                             android:orientation="horizontal"

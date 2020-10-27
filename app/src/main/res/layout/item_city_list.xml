@@ -3,7 +3,7 @@
               android:id="@+id/item_city"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="#FFF"
+              android:background="#EAEAE5"
               android:orientation="vertical">
 
     <!--显示省 、 市 、 区/县-->
@@ -15,10 +15,10 @@
             android:gravity="center"
             android:padding="10dp"
             android:textColor="#FF000000"
-            android:textSize="15sp" />
+            android:textSize="15sp"/>
     <!--分隔线-->
     <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#EEEEEE"/>
+            android:background="#EAEAE5"/>
 </LinearLayout>
