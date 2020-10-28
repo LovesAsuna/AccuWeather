@@ -15,19 +15,19 @@ import retrofit2.http.Query
  */
 interface APIService {
 
-    @GET("currentconditions/v1/{locationkey}?apikey=sAHhOvM8zieoMpZRzRloTSVR6KYwZRd5&language=zh-CN&details=true")
+    @GET("currentconditions/v1/{locationkey}?apikey=oztsztgoE2rnH5fO2ujuFWKCfRrH092q&language=zh-CN&details=true")
     fun getTodayWeather(@Path("locationkey") key: String): Call<WeatherResponse>
 
-    @GET("forecasts/v1/daily/5day/{locationkey}?apikey=sAHhOvM8zieoMpZRzRloTSVR6KYwZRd5&language=zh-CN&metric=true")
+    @GET("forecasts/v1/daily/5day/{locationkey}?apikey=oztsztgoE2rnH5fO2ujuFWKCfRrH092q&language=zh-CN&metric=true")
     fun getWeatherForecast(@Path("locationkey") key: String): Call<ForecastResponse>
 
-    @GET("locations/v1/cities/geoposition/search?apikey=sAHhOvM8zieoMpZRzRloTSVR6KYwZRd5&language=zh-CN&details=false&toplevel=false")
+    @GET("locations/v1/cities/geoposition/search?apikey=oztsztgoE2rnH5fO2ujuFWKCfRrH092q&language=zh-CN&details=false&toplevel=false")
     fun getLocation(@Query("q") location: String): Call<LocationResponse>
 
-    @GET("indices/v1/daily/1day/{locationkey}?apikey=sAHhOvM8zieoMpZRzRloTSVR6KYwZRd5&language=zh-CN&details=true")
+    @GET("indices/v1/daily/1day/{locationkey}?apikey=oztsztgoE2rnH5fO2ujuFWKCfRrH092q&language=zh-CN&details=true")
     fun getDailyIndex(@Path("locationkey") key: String): Call<LifeStyleResponse>
 
-    @GET("locations/v1/cities/search?apikey=sAHhOvM8zieoMpZRzRloTSVR6KYwZRd5&language=zh-CN")
+    @GET("locations/v1/cities/search?apikey=oztsztgoE2rnH5fO2ujuFWKCfRrH092q&language=zh-CN")
     fun getCityResearch(@Query("q") q: String): Call<CitySearchResponse>
 
     /**

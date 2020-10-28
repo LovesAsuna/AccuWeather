@@ -11,6 +11,27 @@ data class ForecastResponse(
 	val dailyForecasts: List<DailyForecastsItem>? = null
 )
 
+data class Night(
+
+	@field:JsonProperty("HasPrecipitation")
+	val hasPrecipitation: Boolean? = null,
+
+	@field:JsonProperty("IconPhrase")
+	val iconPhrase: String? = null,
+
+	@field:JsonProperty("LocalSource")
+	val localSource: LocalSource? = null,
+
+	@field:JsonProperty("Icon")
+	val icon: Int? = null,
+
+	@field:JsonProperty("PrecipitationType")
+	val precipitationType: String? = null,
+
+	@field:JsonProperty("PrecipitationIntensity")
+	val precipitationIntensity: String? = null
+)
+
 data class DailyForecastsItem(
 
 	@field:JsonProperty("Temperature")
@@ -29,7 +50,7 @@ data class DailyForecastsItem(
 	val sources: List<String?>? = null,
 
 	@field:JsonProperty("Date")
-	val date: String? = null,
+	var date: String? = null,
 
 	@field:JsonProperty("Link")
 	val link: String? = null,
@@ -44,7 +65,7 @@ data class Headline(
 	val category: String? = null,
 
 	@field:JsonProperty("EndEpochDate")
-	val endEpochDate: Any? = null,
+	val endEpochDate: Int? = null,
 
 	@field:JsonProperty("EffectiveEpochDate")
 	val effectiveEpochDate: Int? = null,
@@ -56,7 +77,7 @@ data class Headline(
 	val text: String? = null,
 
 	@field:JsonProperty("EndDate")
-	val endDate: Any? = null,
+	val endDate: String? = null,
 
 	@field:JsonProperty("Link")
 	val link: String? = null,
@@ -80,20 +101,11 @@ data class Day(
 	val localSource: LocalSource? = null,
 
 	@field:JsonProperty("Icon")
-	val icon: Int? = null
-)
+	val icon: Int? = null,
 
-data class Night(
+	@field:JsonProperty("PrecipitationType")
+	val precipitationType: String? = null,
 
-	@field:JsonProperty("HasPrecipitation")
-	val hasPrecipitation: Boolean? = null,
-
-	@field:JsonProperty("IconPhrase")
-	val iconPhrase: String? = null,
-
-	@field:JsonProperty("LocalSource")
-	val localSource: LocalSource? = null,
-
-	@field:JsonProperty("Icon")
-	val icon: Int? = null
+	@field:JsonProperty("PrecipitationIntensity")
+	val precipitationIntensity: String? = null
 )

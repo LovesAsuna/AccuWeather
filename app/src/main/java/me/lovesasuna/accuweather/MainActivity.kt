@@ -89,7 +89,7 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
     // 图标显示标识,true显示，false不显示,只有定位的时候才为true,切换城市和常用城市都为false
     private var flag = true
 
-    lateinit var waveView : CircleView
+    lateinit var waveView: CircleView
     lateinit var tvPm25: TextView
     lateinit var tvO3: TextView
     lateinit var tvCo: TextView
@@ -444,6 +444,9 @@ class MainActivity : MvpActivity<WeatherContract.WeatherPresenter>(), WeatherCon
         tvLowHeight.text = text
         if (response.body()?.dailyForecasts?.get(0) != null) {
             val data: List<DailyForecastsItem> = response.body()?.dailyForecasts!!
+            data.forEach {
+                it.date = it.date?.replace(Regex("T.*"), "")
+            }
             mList.clear() //添加数据之前先清除
             mList.addAll(data) //添加数据
             mAdapter.notifyDataSetChanged() //刷新列表

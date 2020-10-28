@@ -26,7 +26,6 @@ abstract class NetCallBack<T> : Callback<T> {
 
     //访问失败回调
     override fun onFailure(call: Call<T>, t: Throwable) {
-        println("信息: ${t.message}")
         onFailed()
     }
 
